@@ -20,6 +20,7 @@ class DadosViewSet(viewsets.ModelViewSet):
     """buscando todos os objetos Dados, então selecionando a classe serializer"""
     queryset = Dados.objects.all()
     serializer_class = DadoSerializer
+    # Uma classe com o fim de criar autenticação básica e a outra para checar a permanência da autenticação
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
