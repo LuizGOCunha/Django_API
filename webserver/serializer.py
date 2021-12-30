@@ -11,7 +11,16 @@ class DadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dados
         fields = ['id', 'nome', 'integer', 'data', 'bool', 'binary', 'observation']
-# O nome da vunção de validação DEVE TER O NOME 'validate' SEGUIDO PELO ATRIBUTO. Ou não irá reconhecer.
+
+
+# Essa é a nossa versão 2 do nosso serializer, a diferença aqui é que ele vai chamar o novo campo 'email'
+class DadoSerializerV2(serializers.ModelSerializer):
+    class Meta:
+        model = Dados
+        fields = ['id', 'nome', 'integer', 'data', 'bool', 'binary', 'observation', 'email']
+
+
+# O nome da função de validação DEVE TER O NOME 'validate' SEGUIDO PELO ATRIBUTO. Ou não irá reconhecer.
     def validate_nome(self, nome):
         caracteres_proibidos = re.compile('[@_!#$%^&*()<>?/|\\\}{~\[\]:0123456789]')
         nome_valido = caracteres_proibidos.search(nome) is None

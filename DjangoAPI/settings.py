@@ -41,10 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webserver',
-    'rest_framework'
+    'rest_framework',
+    'django_filters',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,3 +129,50 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Essa VERSIONING_CLASS vai apontar que tipo de versionamento queremos para nossa API
+# Essa PAGINATION_CLASS vai ficar responsável de configurar a paginação da nossa API
+# Essa DEFAULT_PERMISSION_CLASSES vai mostrar as nossas classes de permissão padrão
+# Essa DEFAULT_AUTHENTICATION_CLASSES vai exibir nossas classes de autenticação padrão
+# Essa DEFAULT_THROTTLE_CLASSES vai definir a classe que usaremos para limitar a quantidade de requests que um user faz
+# Esse DEFAULT_THROTTLE_RATES vai dizer quais tipos de usuarios podem fazer quantos requests
+# No caso abaixo temos uma configuração de paginação que exibe um número fixo de cadastros em cada página numérica
+# Logo abaixo especificamos o número máximo de cadastros que cada página deve exibir.
+REST_FRAMEWORK = {
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated',
+                                  'rest_framework.permissions.DjangoModelPermissions'],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.BasicAuthentication'],
+    # Atenção: É necessario que o valor dessas chaves CLASSES seja SEMPRE uma LISTA: '[]'
+    'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.AnonRateThrottle',
+                                 'rest_framework.throttling.UserRateThrottle'],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '1/minute',
+        'user': '20/minute'
+    }
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000"
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@ class Dados(models.Model):
     bool = models.BooleanField(blank=True,null=True)
     binary = models.BinaryField(blank=True, null=True)
     observation = models.TextField(max_length=500)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return f'id:{self.id}, nome:{self.nome}'
