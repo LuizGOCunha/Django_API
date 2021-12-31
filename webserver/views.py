@@ -8,12 +8,13 @@
 #        dados = {'chave': 'valor',}
 #        return JsonResponse(dados)
 
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from webserver.models import Dados
 from webserver.serializer import DadoSerializer, DadoSerializerV2
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
 
 
 # Em um viewset, a lógica de views relacionados podem ser unidos em uma única classe chamada ViewSet
@@ -50,6 +51,24 @@ class DadosViewSet(viewsets.ModelViewSet):
         else:
             return DadoSerializer
 
+    # Agora vamos ver se a gente consegue inserir um cabeçalho personalizado nos nossos response headers?
+    def create(self, request, *args, **kwargs):
+        # Aqui apontamos qual serializer vamos usar (utilizamos esse instanciado acima), e referenciamos nossos dados
+        serializer = self.serializer_class(data=request.data)
+        # Agora validamos nosso serializador, e se estiver tudo certo salvamos ele e os dados contidos no db
+        if serializer.is_valid():
+            serializer.save()
+            # Aqui fazemos ele responder com os mesmos dados salvos, além de dar um status de confirmação
+            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+            # aqui buscamos o id presente nos dados para que possamos incrementar na nossa mensagem
+            # (lembrando que o id deve ser convertido para string ou não poderá ser concatenado)
+            id = str(serializer.data['id'])
+            # Agora criamos o header que viemos aqui criar (Mostra a localização dos dados na uri)
+            response['Location'] = request.build_absolute_uri() + id
+            # Um headerzinho personalizado só pra dizer que o poder está nas minhas mãos
+            response['Lembre-se'] = 'Fortune favors the Bold'
+            # agora retorna a response criada
+            return response
 
 
 
