@@ -13,8 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -23,10 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i1@nzpn8^&3qz3nutvg8e0qri88qavvs9jc(reh8c#^6em%e$n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# O django diz isso ^ pois o debug tem uma tela de erro que ajuda o developer a compreender o sistema.
+# Uma tela como essa pode ajudar um hacker a encontrar falhas na nossa segurança.
 DEBUG = True
 
+# No caso de DEBUG = False, é preciso informar ao django quais os hosts que são permitidos
 ALLOWED_HOSTS = []
-
 
 # Para instalar o rest framework do django é necessário:
 # pip install djangorestframework
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+#    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'DjangoAPI.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -87,7 +90,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -107,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -118,7 +119,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -136,14 +136,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Essa DEFAULT_AUTHENTICATION_CLASSES vai exibir nossas classes de autenticação padrão
 # Essa DEFAULT_THROTTLE_CLASSES vai definir a classe que usaremos para limitar a quantidade de requests que um user faz
 # Esse DEFAULT_THROTTLE_RATES vai dizer quais tipos de usuarios podem fazer quantos requests
+# Esse DEFAULT_PARSER_CLASSES vai determinar qual o tipo de parsing dos nossos dados (Json é o padrão)
+# Esse DEFAULT_RENDERER_CLASSES vai ser o que renderizará o parsing na tela
+# OBS.: As duas opções acima dão override na interface padrão do Django API, por isso foi comentado
 # No caso abaixo temos uma configuração de paginação que exibe um número fixo de cadastros em cada página numérica
 # Logo abaixo especificamos o número máximo de cadastros que cada página deve exibir.
 REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated',
-                                  'rest_framework.permissions.DjangoModelPermissions'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',
+                                   'rest_framework.permissions.DjangoModelPermissions'],
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.BasicAuthentication'],
     # Atenção: É necessario que o valor dessas chaves CLASSES seja SEMPRE uma LISTA: '[]'
     'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.AnonRateThrottle',
@@ -151,28 +154,27 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1/minute',
         'user': '20/minute'
-    }
+    },
+    #    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser',
+    #                               'rest_framework_yaml.parsers.YAMLParser',
+    #                               'rest_framework_xml.parsers.XMLParser'],
+    #    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer',
+    #                                 'rest_framework_yaml.renderers.YAMLRenderer',
+    #                                 'rest_framework_xml.renderers.XMLRenderer']
 }
 
+# Origens permitidas a ter acesso a esse API (Redundante, nesse caso, pois só localhost tem acesso)
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000"
 ]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Aqui é onde você pode apontar o diretorio de localização
+# Esse diretorio pode receber as mensagens que serão mostradas na API para que sejam alteradas com o seguinte coimando:
+# $ python3 manage.py makemessages -l (localização, ex: pt_BR)
+# Após isso será criado um arquivo django.po que contém todas as mensagens padrões, que podem ser alteradas na mão.
+# Finalmente, para salvar as configurações, é necessário compilar as mensagens com o seguinte comando:
+# $ python3 manage.py compilemessages -l (localização)
+# Pronto, mensagens alteradas com sucesso.
+# LOCALE_PATHS = (
+#     os.path.join(BASE_DIR, 'locale/')
+# )

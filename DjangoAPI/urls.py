@@ -25,6 +25,9 @@ router.register('dados', DadosViewSet, basename='Dados')
 
 # Em seguida registramos nossa rota principal (string vazia) no include urls ligado a router (objeto de DefaultRouter)
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # trocamos o path admin aqui para dar um reforço na segurança da nossa API
+    path('painel/', admin.site.urls),
+    # Algum erro ocorreu com o honey pot, deixe isso aqui e tente consertar depois
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
     path('', include(router.urls)),
 ]
